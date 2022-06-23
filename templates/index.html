@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+
+    <title>Spotify Downloader</title>
+</head>
+
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="user_id">Enter User ID : </label>
+        <div class="form-group">
+            <input class="form-control" type="text" name="user_id" id="user_id" placeholder="Enter User ID" required>
+        </div>
+        <input class="btn btn-primary" type="submit" value="Search" onclick="showSpinner()">
+    </form>
+    <br>
+    {% if user_id %}
+    <p>
+        <a href="https://open.spotify.com/user/{{ user_id }} " target="_blank">{{user_name}}</a>
+    </p>
+    {% endif %}
+
+    <div class="container">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {% if playlists_zip %}
+                    <table class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>URI</th>
+                                <th>User</th>
+                                <th>Total</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        {% for playlist in playlists_zip %}
+                        <tbody>
+                            <tr data-toggle="collapse" data-target="#{{ playlist.0 }}" class="accordion-toggle">
+                                <td><button class="btn btn-default btn-xs"><span
+                                            class="fa-solid fa-eye"></span></button></td>
+                                <td>{{ playlist.0 }}</td>
+                                <td>{{ playlist.1 }}</td>
+                                <td>{{ user_id }}</td>
+                                <td>{{playlist.2}}</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="12" class="hiddenRow">
+                                    <div class="accordian-body collapse" id="{{ playlist.0 }}">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr class="info">
+                                                    <th>Track ID</th>
+                                                    <th>Name</th>
+                                                    <th>Album</th>
+                                                    <th>Artist</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            {% for key, value in playlist.3.items %}
+                                            <tbody>
+                                                <tr data-toggle="collapse" class="accordion-toggle"
+                                                    data-target="#demo10">
+                                                    <td>{{ key }}</td>
+                                                    <td>{{ value.0 }}</td>
+                                                    <td>{{ value.1 }} </td>
+                                                    <td>{{ value.2 }}</td>
+                                                    <td>
+                                                        <a href="/download?name={{ value.0 }}&Album={{ value.1}}&Artist={{ value.2 }}"
+                                                            class="btn btn-default btn-sm">
+                                                            <i class="fa-solid fa-download"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            {% endfor %}
+                                        </table>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+</body>
+<script type="text/javascript" src="{% static 'main.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+</html>
